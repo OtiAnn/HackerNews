@@ -1,0 +1,29 @@
+section.magazine-hero
+  span.ws-logo-container
+    = image_tag("https://www.wealthsimple.com/assets/magazine/images/header/logo-010d4e6641c28141d4c88b71646b377a.svg", alt: "Wealthsimple", class: "ws-logo")
+  h1.h1-bold Magazine
+  h2.magazine-subtitle Stories and Ideas from Wealthsimple
+
+.row-lg
+  .posts-container
+    .featured-post
+      = link_to @first_story.url
+        = image_tag(@first_story.image_url, alt: "feature-magazine-post-image")
+        .post-excerpt.featured-post-excerpt
+          span.post-category Story
+          h3.post-excerpt-title = @first_story.title
+          p = @first_story.description
+
+ul.recent-posts
+  - @story_lists.each do |story|
+    li.recent-posts-post
+      = link_to story.url
+        .recent-post-image-container
+          = image_tag story.image_url
+        .post-excerpt
+          span.post-category Story
+          h3.post-excerpt-title = story.title
+          p.three-line-dot = story.description
+
+.load-more-posts
+  = link_to "More posts", "#", class: "button"

@@ -1,0 +1,21 @@
+.three-line-dot
+  overflow: hidden
+  text-overflow: ellipsis
+  display: -webkit-box
+  -webkit-line-clamp: 3
+  -webkit-box-orient: vertical
+
+.recent-posts
+  li.recent-posts-post
+    width: calc(50% - 10px)
+    display: inline-block
+    vertical-align: top
+    &:nth-child(odd)
+      margin-right: 20px
+
+@media (max-width: 576px)
+  .recent-posts
+    li.recent-posts-post
+      width: 100%
+      &:nth-child(odd)
+        margin-right: 0

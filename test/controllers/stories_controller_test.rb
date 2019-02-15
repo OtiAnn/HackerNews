@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class MagazineControllerTest < ActionDispatch::IntegrationTest
+class StoriesControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get magazine_index_url
+    get stories_index_url
     assert_response :success
   end
 
