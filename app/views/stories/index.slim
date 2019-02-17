@@ -1,0 +1,109 @@
+section.magazine-hero
+  span.ws-logo-container
+    = image_tag("https://www.wealthsimple.com/assets/magazine/images/header/logo-010d4e6641c28141d4c88b71646b377a.svg", alt: "Wealthsimple", class: "ws-logo")
+  h1.h1-bold Magazine
+  h2.magazine-subtitle Stories and Ideas from Wealthsimple
+
+.row-lg
+  .posts-container
+    .featured-post
+      = link_to @first_story.url
+        = image_tag(@first_story.image_url, alt: "feature-magazine-post-image")
+        .post-excerpt.featured-post-excerpt
+          span.post-category Story
+          h3.post-excerpt-title = @first_story.title
+          p = @first_story.description
+
+ul.recent-posts#infinite-list data-page="2" data-totalPage="#{@total_pages}"
+  - @story_lists.each_with_index do |story, i|
+    - if i != 0
+      li.recent-posts-post
+        = link_to story.url
+          .recent-post-image-container
+            - if story.image_url.include? "http"
+              = image_tag story.image_url
+          .post-excerpt
+            span.post-category Story
+            h3.post-excerpt-title = story.title
+            p.three-line-dot = story.description
+
+.load-more-posts
+  = link_to "More posts", "#", class: "button"
+
+javascript:
+  var loadMore = function(listElm) {
+    // get next page stories
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/stories/get_story_list?page='+ listElm.dataset.page);
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        data = JSON.parse(xhr.responseText);
+        data.forEach(function(el){
+          var html, item = document.createElement('li');
+          item.className = "recent-posts-post";
+          html =
+            '<a href="' + el.url +'">' + 
+              '<div class="recent-post-image-container">' +
+                '<img src="' + el.image_url + '">' +
+              '</div>' +
+              '<div class="post-excerpt">' +
+                '<span class="post-category">Story</span>' +
+                '<h3 class="post-excerpt-title">' + el.title + '</h3>' +
+                '<p class="three-line-dot">' + el.description + '</p>' +
+              '</div>' +
+            '</a>';
+          item.innerHTML = html;
+          listElm.appendChild(item);
+
+          // add opacity effect for items
+          item.style.opacity = 0;
+          window.getComputedStyle(item).opacity;
+          item.style.opacity = 1;
+        });
+        
+        //change dataset to next page
+        listElm.dataset.page = parseInt(listElm.dataset.page) + 1;
+        
+        //once data appear, user can scroll again
+        setTimeout(function(){
+          document.body.classList.remove('stop-scrolling');
+        }, 300)
+      }
+      else {
+        console.log('Request failed.  Returned status of ' + xhr.status);
+      }
+    };
+    xhr.send();
+  }
+
+  var scrollTimer, lastScrollFireTime = 0;
+
+  window.addEventListener('scroll', function() {
+    var listElm = document.querySelector('#infinite-list');
+
+    // hide load more btn when there is no more data
+    if (parseInt(listElm.dataset.page) > parseInt(listElm.dataset.totalpage)){
+      document.querySelector('.load-more-posts').style.opacity = 0;
+      return;
+    }
+
+    // when user scroll past the button, trigger ajax event
+    if ((window.scrollY + 500) >= document.querySelector('.load-more-posts').offsetTop) {
+      document.body.classList.add('stop-scrolling');
+      
+      // prevent trigger multiple times of ajax event if the event hasn't completed
+      var minScrollTime = 100;
+      var now = new Date().getTime();
+      
+      if (!scrollTimer) {
+        loadMore(listElm);
+        if (now - lastScrollFireTime > (3 * minScrollTime)) {
+          lastScrollFireTime = now;
+        }
+        scrollTimer = setTimeout(function() {
+          scrollTimer = null;
+          lastScrollFireTime = new Date().getTime();
+        }, minScrollTime);
+      }
+    }
+  });

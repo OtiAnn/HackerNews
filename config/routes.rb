@@ -1,3 +1,4 @@
 Rails.application.routes.draw do
-  root 'magazine#index'
+  root 'stories#index'
+  get 'stories/get_story_list'
 end
