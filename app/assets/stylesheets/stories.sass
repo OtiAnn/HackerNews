@@ -1,3 +1,7 @@
+.stop-scrolling
+  height: 100%
+  overflow: hidden
+
 .three-line-dot
   overflow: hidden
   text-overflow: ellipsis
@@ -10,8 +14,14 @@
     width: calc(50% - 10px)
     display: inline-block
     vertical-align: top
+    transition: opacity .7s ease-in-out
     &:nth-child(odd)
       margin-right: 20px
+
+.load-more-posts
+  height: 170px
+  margin-top: -170px
+  transition: opacity .7s ease-in-out
 
 @media (max-width: 576px)
   .recent-posts
