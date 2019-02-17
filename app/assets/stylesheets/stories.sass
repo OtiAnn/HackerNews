@@ -9,6 +9,27 @@
   -webkit-line-clamp: 3
   -webkit-box-orient: vertical
 
+.filter
+  margin-bottom: 40px
+  .filter-button
+    display: inline-block
+    text-align: center
+    vertical-align: middle
+    margin-right: 20px
+    cursor: pointer
+    border: 1px solid #ffb21a
+    &.selected
+      pointer-events: none
+    &.selected:hover
+      cursor: default
+      background: #ffb21a
+    &:not(.selected)
+      background: #ffffff
+      color: #ffb21a
+      &:hover
+        background: #ffb21a
+        color: #ffffff
+
 .recent-posts
   li.recent-posts-post
     width: calc(50% - 10px)
@@ -23,9 +44,15 @@
   margin-top: -170px
   transition: opacity .7s ease-in-out
 
+@media (min-width: 620px)
+.magazine-hero
+  margin: 100px 0 60px  
+
 @media (max-width: 576px)
   .recent-posts
     li.recent-posts-post
       width: 100%
       &:nth-child(odd)
         margin-right: 0
+  .filter
+    display: none
