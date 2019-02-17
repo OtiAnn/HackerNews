@@ -8,7 +8,18 @@ class StoriesController < ApplicationController
   end
 
   def get_story_list
-    @story_lists = Story.full_content.order(publish_at: :desc).page(params[:page]).per(30)
+    full_content = Story.full_content.order(publish_at: :desc)
+    case params[:filter]
+    when "odd"
+      odd_stories = full_content.each_with_index.select { |story, i| i % 2 == 0 }
+      @story_lists = Kaminari.paginate_array(odd_stories).page(params[:page]).per(30)
+    when "even"
+      even_stories = full_content.each_with_index.select { |story, i| i % 2 == 1 }
+      @story_lists = Kaminari.paginate_array(even_stories).page(params[:page]).per(30)
+    else
+      all_stories = full_content.each_with_index.select { |story, i| i % 1 ==  0 }
+      @story_lists = Kaminari.paginate_array(all_stories).page(params[:page]).per(30)
+    end
     render json: @story_lists
   end
 end

@@ -4,17 +4,22 @@ section.magazine-hero
   h1.h1-bold Magazine
   h2.magazine-subtitle Stories and Ideas from Wealthsimple
 
+.filter
+  .filter-button.button.selected#all All Stories
+  .filter-button.button#odd Odd Stories
+  .filter-button.button#even Even Stories
+
 .row-lg
   .posts-container
-    .featured-post
-      = link_to @first_story.url
-        = image_tag(@first_story.image_url, alt: "feature-magazine-post-image")
+    .featured-post#top-story
+      = link_to @first_story.url, id: 'top-story-url'
+        = image_tag(@first_story.image_url, alt: "feature-magazine-post-image", id: 'top-story-image-url')
         .post-excerpt.featured-post-excerpt
           span.post-category Story
-          h3.post-excerpt-title = @first_story.title
-          p = @first_story.description
+          h3.post-excerpt-title#top-story-title = @first_story.title
+          p#top-story-desc = @first_story.description
 
-ul.recent-posts#infinite-list data-page="2" data-totalPage="#{@total_pages}"
+ul.recent-posts#infinite-list data-page="2" data-totalPage="#{@total_pages}" data-filter="all"
   - @story_lists.each_with_index do |story, i|
     - if i != 0
       li.recent-posts-post
@@ -31,34 +36,38 @@ ul.recent-posts#infinite-list data-page="2" data-totalPage="#{@total_pages}"
   = link_to "More posts", "#", class: "button"
 
 javascript:
+  var changeList = function(listElm, el) {
+    var html, item = document.createElement('li');
+    item.className = "recent-posts-post";
+    html =
+      '<a href="' + el[0].url +'">' + 
+        '<div class="recent-post-image-container">' +
+          '<img src="' + el[0].image_url + '">' +
+        '</div>' +
+        '<div class="post-excerpt">' +
+          '<span class="post-category">Story</span>' +
+          '<h3 class="post-excerpt-title">' + el[0].title + '</h3>' +
+          '<p class="three-line-dot">' + el[0].description + '</p>' +
+        '</div>' +
+      '</a>';
+    item.innerHTML = html;
+    listElm.appendChild(item);
+
+    // add opacity effect for items
+    item.style.opacity = 0;
+    window.getComputedStyle(item).opacity;
+    item.style.opacity = 1;
+  }
+
   var loadMore = function(listElm) {
     // get next page stories
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/stories/get_story_list?page='+ listElm.dataset.page);
+    xhr.open('GET', '/stories/get_story_list?page='+ listElm.dataset.page + '&filter=' + listElm.dataset.filter);
     xhr.onload = function() {
       if (xhr.status === 200) {
         data = JSON.parse(xhr.responseText);
         data.forEach(function(el){
-          var html, item = document.createElement('li');
-          item.className = "recent-posts-post";
-          html =
-            '<a href="' + el.url +'">' + 
-              '<div class="recent-post-image-container">' +
-                '<img src="' + el.image_url + '">' +
-              '</div>' +
-              '<div class="post-excerpt">' +
-                '<span class="post-category">Story</span>' +
-                '<h3 class="post-excerpt-title">' + el.title + '</h3>' +
-                '<p class="three-line-dot">' + el.description + '</p>' +
-              '</div>' +
-            '</a>';
-          item.innerHTML = html;
-          listElm.appendChild(item);
-
-          // add opacity effect for items
-          item.style.opacity = 0;
-          window.getComputedStyle(item).opacity;
-          item.style.opacity = 1;
+          changeList(listElm, el);
         });
         
         //change dataset to next page
@@ -76,8 +85,9 @@ javascript:
     xhr.send();
   }
 
-  var scrollTimer, lastScrollFireTime = 0;
 
+  //scroll event
+  var scrollTimer, lastScrollFireTime = 0;
   window.addEventListener('scroll', function() {
     var listElm = document.querySelector('#infinite-list');
 
@@ -107,3 +117,45 @@ javascript:
       }
     }
   });
+
+  //filter click event
+  var filter = function (filter_type) {
+    document.getElementById(filter_type).onclick = function (){
+      document.querySelector('.selected').classList.remove('selected');
+      this.classList.add('selected');
+      var listElm = document.querySelector('#infinite-list');
+      document.querySelector('.load-more-posts').style.opacity = 1;
+      listElm.innerHTML = '';
+      listElm.dataset.page = 2;
+      listElm.dataset.filter = filter_type;
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/stories/get_story_list?filter='+ filter_type);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          data = JSON.parse(xhr.responseText);
+          data.forEach(function(el, i){
+            if (i == 0) {
+              // top story set up
+              document.getElementById('top-story-url').setAttribute('href', el[0].url);
+              document.getElementById('top-story-image-url').setAttribute('src', el[0].image_url);
+              document.getElementById('top-story-title').innerHTML = el[0].title;
+              document.getElementById('top-story-desc').innerHTML = el[0].description;
+            } else {
+              changeList(listElm, el);
+            }
+
+          });
+        }
+        else {
+          console.log('Request failed.  Returned status of ' + xhr.status);
+        }
+      };
+      xhr.send();
+    }
+  }
+
+  window.onload = function(){
+    filter('all');
+    filter('odd');
+    filter('even');
+  }

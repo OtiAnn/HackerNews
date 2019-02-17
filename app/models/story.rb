@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 
 class Story < ApplicationRecord
-  scope :full_content, -> { where.not(image_url: nil, description: nil) }
+  scope :full_content, -> { where.not(url: nil, image_url: nil, description: nil) }
 
   def self.get_top_stories
     array = JSON.load(open("https://hacker-news.firebaseio.com/v0/topstories.json"))
