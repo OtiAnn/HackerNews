@@ -11,24 +11,25 @@
 
 .filter
   margin-bottom: 40px
-  .filter-button
+  text-align: center
+  .filter-button, .filter-dot
     display: inline-block
     text-align: center
     vertical-align: middle
-    margin-right: 20px
+    color: #999999
+  .filter-button
+    height: 50px
+    line-height: 50px
+    margin: 0 20px
     cursor: pointer
-    border: 1px solid #ffb21a
+    color: #333333
     &.selected
       pointer-events: none
-    &.selected:hover
       cursor: default
-      background: #ffb21a
     &:not(.selected)
-      background: #ffffff
-      color: #ffb21a
+      color: #999999
       &:hover
-        background: #ffb21a
-        color: #ffffff
+        color: #333333
 
 .recent-posts
   li.recent-posts-post
@@ -46,7 +47,7 @@
 
 @media (min-width: 620px)
 .magazine-hero
-  margin: 100px 0 60px  
+  margin: 100px 0 90px  
 
 @media (max-width: 576px)
   .recent-posts

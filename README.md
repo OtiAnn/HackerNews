@@ -1,24 +1,13 @@
-# README
+# HackerNews 🚀
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+> 🚀🚀🚀A coding challenge from fintros which required to build a magazine page with HackerNews Api.
 
-Things you may want to cover:
+⭐️ Website Link: [https://hacker-news-annie.herokuapp.com/](https://hacker-news-annie.herokuapp.com/)
 
-* Ruby version
+## Credit
 
-* System dependencies
+This software uses the following open source packages:
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* [Ruby on Rails](https://rubyonrails.org/) (Ruby v2.5.3 / Rails v5.2.2)
+* [HackerNews API](https://github.com/HackerNews/API)
+* Website layout followed by: [Wealthsimple Magazine Page](https://www.wealthsimple.com/en-ca/magazine)
