@@ -1,6 +1,6 @@
 class StoriesController < ApplicationController
   def index
-    Story.get_top_stories
+    # Story.get_top_stories
     all_stories = Story.full_content.order(publish_at: :desc).first(30)
     @first_story = all_stories.first
     @story_lists = all_stories
